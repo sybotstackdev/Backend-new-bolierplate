@@ -1,0 +1,9 @@
+[build]
+  base = "."  # The root of the project
+  publish = "."  # Publish the root directory (or change to where your static files are, if any)
+  functions = "netlify-functions"  # Serverless functions folder
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
