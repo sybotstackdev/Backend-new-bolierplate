@@ -1,68 +1,145 @@
-# Vella Mobile App Backend
+# Reno Pilot Backend
 
-## Overview
-The **Vella Mobile App Backend** powers the Vella platform, which connects families seeking alternative education options with programs that meet their needs. It also supports education founders in building sustainable learning environments.
+A modern, scalable backend for the Reno Pilot platform, built with Node.js, Express, and PostgreSQL.  
+This backend provides robust user authentication, onboarding, matching, and admin features for education-focused applications.
 
-## Features
-- User authentication and role-based access (Families, Founders, Others)
-- Onboarding flow for families and founders
-- Matching system for families seeking education options
-- Insights and analytics on education preferences
-- Secure API endpoints with JWT authentication
-- Integration with external services (Mailgun, Google Maps API, etc.)
+---
 
-## Installation
-1. Clone the repository:
-   git clone https://github.com/sicsdev/vella-backend.git
-   cd vella-backend
+## 🚀 Features
 
-2. Install dependencies:
-   npm install
+- **User Authentication**: Secure JWT-based login and registration
+- **Role-Based Access**: Support for learners, founders, admins, and more
+- **Onboarding Flows**: Custom onboarding for different user types
+- **Matching System**: Connects families with education founders
+- **RESTful API**: Clean, well-documented endpoints
+- **Database Migrations**: Versioned schema management with SQL migrations
+- **Rate Limiting & Security**: Protects against abuse and attacks
+- **Comprehensive Logging**: Structured logs for debugging and monitoring
+- **Extensible Structure**: Service layer, middleware, and utilities for easy scaling
 
-3. Set up your environment variables by creating a `.env` file:
-   DATABASE_URL=your_postgresql_connection_string
-   MAILGUN_API_KEY=your_mailgun_api_key
-   JWT_SECRET=your_secret_key
-   GOOGLE_MAPS_API_KEY=your_google_maps_api_key
+---
 
-4. Run database migrations:
-   npx prisma migrate dev
+## 🗂️ Project Structure
 
-5. Start the development server:
-   npm run dev
-
-
-## Configuration
-The backend is configured using environment variables. Update the `.env` file to match your setup.
-
-## API Endpoints
-### Authentication
-- `POST /auth/signup` - User registration
-   - `POST /otp/send-otp` - Send OTP
-- `POST /otp/verify-otp` - OTP-based login
-
-### Matching & Onboarding
-- `POST /data/onBoarding` - Onboard families,founders and others
-- `GET /data/match/founders` - Get matched founders
-
-## Database Schema
-- **Users**: Stores user details with roles (Family, Founder, Others)
-- **Profiles**: Stores onboarding data for families and founders
-- **Matches**: Links families with founders
-
-## Authentication
-The backend uses **JWT authentication**. Each request to protected routes must include a valid token in the `Authorization` header:
-```sh
-Authorization: Bearer YOUR_JWT_TOKEN
+```
+reno-pilot-backend/
+├── src/
+│   ├── config/         # App constants & config
+│   ├── controllers/    # Request handlers
+│   ├── database/       # Migrations & migration runner
+│   ├── middleware/     # Auth, error, rate limiting, etc.
+│   ├── routes/         # API route definitions
+│   ├── services/       # Business logic
+│   ├── utils/          # Validation, logging, response helpers
+│   ├── app.js          # Express app setup
+│   └── server.js       # Server startup & DB connection
+├── config/             # Database config
+├── public/             # Static files
+├── API_DOCUMENTATION.md
+├── PROJECT_STRUCTURE.md
+├── package.json
+└── ...
 ```
 
-## Contributing
+---
+
+## ⚡ Getting Started
+
+### 1. Clone the repository
+
+```bash
+git clone https://github.com/sybotstackdev/Backend-new-bolierplate.git
+cd Backend-new-bolierplate
+```
+
+### 2. Install dependencies
+
+```bash
+npm install
+```
+
+### 3. Configure environment variables
+
+Create a `.env` file in the root directory:
+
+```
+DATABASE_USERNAME=your_db_user
+DATABASE_PASSWORD=your_db_password
+DATABASE_HOST=localhost
+DATABASE_PORT=5432
+DATABASE_NAME=your_db_name
+JWT_SECRET=your_jwt_secret
+JWT_REFRESH_SECRET=your_jwt_refresh_secret
+```
+
+### 4. Run database migrations
+
+```bash
+npm run migrate
+```
+
+### 5. Start the development server
+
+```bash
+npm run dev
+```
+
+The server will:
+- Connect to the database
+- Run any pending migrations
+- Start listening on the configured port
+
+---
+
+## 📚 API Documentation
+
+See [API_DOCUMENTATION.md](./API_DOCUMENTATION.md) for detailed endpoint documentation, request/response examples, and error handling.
+
+---
+
+## 🛠️ Scripts
+
+- `npm run dev` — Start the server in development mode (with hot reload)
+- `npm start` — Start the server in production mode
+- `npm run migrate` — Run all pending database migrations
+
+---
+
+## 🧩 Key Endpoints
+
+- `POST /api/users` — Register a new user
+- `POST /api/users/login` — User login (JWT)
+- `GET /api/users` — List all users (auth required)
+- `GET /api/users/:id` — Get user by ID (auth required)
+- `PUT /api/users/:id` — Update user (auth required)
+- `DELETE /api/users/:id` — Delete user (auth required)
+
+See the API documentation for more!
+
+---
+
+## 🏗️ Contributing
+
 1. Fork the repository
-2. Create a new feature branch (`git checkout -b feature-name`)
-3. Commit your changes (`git commit -m 'Add new feature'`)
-4. Push to the branch (`git push origin feature-name`)
+2. Create a new branch (`git checkout -b feature/your-feature`)
+3. Make your changes and commit (`git commit -m "feat: add new feature"`)
+4. Push to your fork (`git push origin feature/your-feature`)
 5. Open a pull request
 
-## License
-This project is licensed under the MIT License. See the LICENSE file for details.
+---
+
+## 📄 License
+
+This project is licensed under the MIT License.
+
+---
+
+## 🙌 Acknowledgements
+
+- Inspired by best practices in Node.js, Express, and PostgreSQL development
+- See [PROJECT_STRUCTURE.md](./PROJECT_STRUCTURE.md) for a detailed breakdown of the architecture
+
+---
+
+**Happy coding! 🚀**
 
