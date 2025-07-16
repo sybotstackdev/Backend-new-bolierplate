@@ -1,7 +1,8 @@
-import { pool } from "./config/db.js";
+-- Migration: Create users table
+-- Created: 2024-01-01
+-- Description: Initial users table creation
 
-const tables = [
-  `CREATE TABLE IF NOT EXISTS users (
+CREATE TABLE IF NOT EXISTS users (
     id SERIAL PRIMARY KEY,
     first_name VARCHAR(255) NOT NULL,
     last_name VARCHAR(255) NOT NULL,
@@ -19,17 +20,16 @@ const tables = [
     city VARCHAR(100) DEFAULT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);`
-];
+);
 
-export const createTables = async () => {
-  try {
-    for (const table of tables) {
-      await pool.query(table);
-      console.info(`Table creation :: in progress ./.`);
-    }
-    console.info(`Table creation :: complete `);
-  } catch (err) {
-    console.error("Error creating tables", err);
-  }
-};
+-- Create index on email for faster lookups
+CREATE INDEX IF NOT EXISTS idx_users_email ON users(email);
+
+-- Create index on role for filtering
+CREATE INDEX IF NOT EXISTS idx_users_role ON users(role);
+
+-- Create index on is_approved for filtering
+CREATE INDEX IF NOT EXISTS idx_users_approved ON users(is_approved);
+
+-- Create index on created_at for sorting
+CREATE INDEX IF NOT EXISTS idx_users_created_at ON users(created_at DESC); 
