@@ -259,6 +259,22 @@ Delete a user account (requires authentication).
 - **zip_code**: Optional
 - **profile_pic**: Optional, URL string
 
+### Product Creation
+- **name**: Required, minimum 3 characters
+- **description**: Required, minimum 10 characters
+- **price**: Required, positive number
+- **category**: Required, minimum 2 characters
+- **image_url**: Optional, URL string
+- **creator_id**: Required, valid user ID
+
+### Product Update
+- **name**: Optional, minimum 3 characters
+- **description**: Optional, minimum 10 characters
+- **price**: Optional, positive number
+- **category**: Optional, minimum 2 characters
+- **image_url**: Optional, URL string
+- **is_active**: Optional, boolean
+
 ## Authentication
 
 JWT tokens are used for authentication. Include the token in the Authorization header:
@@ -267,6 +283,224 @@ Authorization: Bearer <your-jwt-token>
 ```
 
 Tokens expire after 24 hours.
+
+## Product Endpoints
+
+### 1. Get All Products
+**GET** `/api/products`
+
+Retrieve all products with filtering, search, and pagination.
+
+**Query Parameters:**
+- `page` (optional): Page number (default: 1)
+- `limit` (optional): Items per page (default: 10, max: 100)
+- `category` (optional): Filter by category
+- `search` (optional): Search in name and description
+- `sortBy` (optional): Sort field (default: 'created_at')
+- `sortOrder` (optional): Sort order 'ASC' or 'DESC' (default: 'DESC')
+- `minPrice` (optional): Minimum price filter
+- `maxPrice` (optional): Maximum price filter
+
+**Response (200):**
+```json
+{
+  "success": true,
+  "message": "Data retrieved successfully",
+  "data": {
+    "data": [
+      {
+        "id": 1,
+        "name": "Advanced JavaScript Course",
+        "description": "Learn advanced JavaScript concepts",
+        "price": "99.99",
+        "category": "Programming",
+        "image_url": "https://example.com/image.jpg",
+        "creator_id": 1,
+        "creator_name": "John",
+        "creator_last_name": "Doe",
+        "is_active": true,
+        "created_at": "2024-01-01T00:00:00.000Z"
+      }
+    ],
+    "pagination": {
+      "page": 1,
+      "limit": 10,
+      "total": 25,
+      "totalPages": 3,
+      "hasNext": true,
+      "hasPrev": false
+    }
+  }
+}
+```
+
+### 2. Get Product by ID
+**GET** `/api/products/:id`
+
+Retrieve a specific product by ID.
+
+**Response (200):**
+```json
+{
+  "success": true,
+  "message": "Product retrieved successfully",
+  "data": {
+    "id": 1,
+    "name": "Advanced JavaScript Course",
+    "description": "Learn advanced JavaScript concepts",
+    "price": "99.99",
+    "category": "Programming",
+    "image_url": "https://example.com/image.jpg",
+    "creator_id": 1,
+    "creator_name": "John",
+    "creator_last_name": "Doe",
+    "creator_email": "john@example.com",
+    "is_active": true,
+    "created_at": "2024-01-01T00:00:00.000Z",
+    "updated_at": "2024-01-01T12:00:00.000Z"
+  }
+}
+```
+
+### 3. Create Product
+**POST** `/api/products`
+
+Create a new product (requires authentication).
+
+**Request Body:**
+```json
+{
+  "name": "Advanced JavaScript Course",
+  "description": "Learn advanced JavaScript concepts including ES6+, async/await, and modern frameworks",
+  "price": 99.99,
+  "category": "Programming",
+  "image_url": "https://example.com/image.jpg",
+  "creator_id": 1
+}
+```
+
+**Response (201):**
+```json
+{
+  "success": true,
+  "message": "Product created successfully",
+  "data": {
+    "id": 1,
+    "name": "Advanced JavaScript Course",
+    "description": "Learn advanced JavaScript concepts including ES6+, async/await, and modern frameworks",
+    "price": "99.99",
+    "category": "Programming",
+    "image_url": "https://example.com/image.jpg",
+    "creator_id": 1,
+    "created_at": "2024-01-01T00:00:00.000Z"
+  }
+}
+```
+
+### 4. Update Product
+**PUT** `/api/products/:id`
+
+Update an existing product (requires authentication).
+
+**Request Body:**
+```json
+{
+  "name": "Updated JavaScript Course",
+  "description": "Updated description",
+  "price": 89.99,
+  "category": "Programming",
+  "image_url": "https://example.com/new-image.jpg",
+  "is_active": true
+}
+```
+
+**Response (200):**
+```json
+{
+  "success": true,
+  "message": "Product updated successfully",
+  "data": {
+    "id": 1,
+    "name": "Updated JavaScript Course",
+    "description": "Updated description",
+    "price": "89.99",
+    "category": "Programming",
+    "image_url": "https://example.com/new-image.jpg",
+    "is_active": true,
+    "updated_at": "2024-01-01T12:00:00.000Z"
+  }
+}
+```
+
+### 5. Delete Product
+**DELETE** `/api/products/:id`
+
+Delete a product (requires authentication).
+
+**Response (200):**
+```json
+{
+  "success": true,
+  "message": "Product deleted successfully",
+  "data": null
+}
+```
+
+### 6. Get Products by Creator
+**GET** `/api/products/creator/:creatorId`
+
+Retrieve all products created by a specific user.
+
+**Query Parameters:**
+- `page` (optional): Page number (default: 1)
+- `limit` (optional): Items per page (default: 10)
+
+**Response (200):**
+```json
+{
+  "success": true,
+  "message": "Data retrieved successfully",
+  "data": {
+    "data": [
+      {
+        "id": 1,
+        "name": "Advanced JavaScript Course",
+        "description": "Learn advanced JavaScript concepts",
+        "price": "99.99",
+        "category": "Programming",
+        "image_url": "https://example.com/image.jpg",
+        "is_active": true,
+        "created_at": "2024-01-01T00:00:00.000Z"
+      }
+    ],
+    "pagination": {
+      "page": 1,
+      "limit": 10,
+      "total": 5,
+      "totalPages": 1,
+      "hasNext": false,
+      "hasPrev": false
+    }
+  }
+}
+```
+
+### 7. Toggle Product Status
+**PATCH** `/api/products/:id/toggle-status`
+
+Toggle the active status of a product (requires authentication).
+
+**Response (200):**
+```json
+{
+  "success": true,
+  "message": "Product status updated successfully",
+  "data": {
+    "id": 1,
+    "is_active": false
+  }
+}
+```
 
 ## Rate Limiting
 
@@ -308,4 +542,36 @@ curl -X POST http://localhost:5000/api/users/login \
 ```bash
 curl -X GET http://localhost:5000/api/users \
   -H "Authorization: Bearer <your-jwt-token>"
+```
+
+**Get all products:**
+```bash
+curl -X GET "http://localhost:5000/api/products?page=1&limit=10&category=Programming&search=javascript"
+```
+
+**Create a product (with token):**
+```bash
+curl -X POST http://localhost:5000/api/products \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer <your-jwt-token>" \
+  -d '{
+    "name": "Advanced JavaScript Course",
+    "description": "Learn advanced JavaScript concepts including ES6+, async/await, and modern frameworks",
+    "price": 99.99,
+    "category": "Programming",
+    "image_url": "https://example.com/image.jpg",
+    "creator_id": 1
+  }'
+```
+
+**Update a product (with token):**
+```bash
+curl -X PUT http://localhost:5000/api/products/1 \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer <your-jwt-token>" \
+  -d '{
+    "name": "Updated JavaScript Course",
+    "price": 89.99,
+    "is_active": true
+  }'
 ``` 

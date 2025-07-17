@@ -16,6 +16,8 @@ This backend provides robust user authentication, onboarding, matching, and admi
 - **Rate Limiting & Security**: Protects against abuse and attacks
 - **Comprehensive Logging**: Structured logs for debugging and monitoring
 - **Extensible Structure**: Service layer, middleware, and utilities for easy scaling
+- **Advanced Filtering**: Search, pagination, and sorting capabilities
+- **Product Management**: Complete CRUD operations for products/courses
 
 ---
 
@@ -107,12 +109,22 @@ See [API_DOCUMENTATION.md](./API_DOCUMENTATION.md) for detailed endpoint documen
 
 ## 🧩 Key Endpoints
 
+### User Management
 - `POST /api/users` — Register a new user
 - `POST /api/users/login` — User login (JWT)
 - `GET /api/users` — List all users (auth required)
 - `GET /api/users/:id` — Get user by ID (auth required)
 - `PUT /api/users/:id` — Update user (auth required)
 - `DELETE /api/users/:id` — Delete user (auth required)
+
+### Product Management
+- `GET /api/products` — Get all products (with filters & pagination)
+- `GET /api/products/:id` — Get product by ID
+- `POST /api/products` — Create new product (auth required)
+- `PUT /api/products/:id` — Update product (auth required)
+- `DELETE /api/products/:id` — Delete product (auth required)
+- `GET /api/products/creator/:creatorId` — Get products by creator
+- `PATCH /api/products/:id/toggle-status` — Toggle product status (auth required)
 
 See the API documentation for more!
 
