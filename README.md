@@ -18,6 +18,7 @@ This backend provides robust user authentication, onboarding, matching, and admi
 - **Extensible Structure**: Service layer, middleware, and utilities for easy scaling
 - **Advanced Filtering**: Search, pagination, and sorting capabilities
 - **Product Management**: Complete CRUD operations for products/courses
+- **Order Management**: Comprehensive order tracking and management system
 
 ---
 
@@ -125,6 +126,17 @@ See [API_DOCUMENTATION.md](./API_DOCUMENTATION.md) for detailed endpoint documen
 - `DELETE /api/products/:id` — Delete product (auth required)
 - `GET /api/products/creator/:creatorId` — Get products by creator
 - `PATCH /api/products/:id/toggle-status` — Toggle product status (auth required)
+
+### Order Management
+- `GET /api/orders` — Get all orders (with filters & pagination)
+- `GET /api/orders/:id` — Get order by ID (auth required)
+- `POST /api/orders` — Create new order (auth required)
+- `PUT /api/orders/:id` — Update order (auth required)
+- `PATCH /api/orders/:id/status` — Update order status (auth required)
+- `DELETE /api/orders/:id` — Delete order (admin only)
+- `GET /api/orders/customer/:customerId` — Get orders by customer (auth required)
+- `GET /api/orders/product/:productId` — Get orders by product (auth required)
+- `GET /api/orders/statistics` — Get order statistics (auth required)
 
 See the API documentation for more!
 

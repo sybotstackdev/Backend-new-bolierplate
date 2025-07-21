@@ -574,4 +574,371 @@ curl -X PUT http://localhost:5000/api/products/1 \
     "price": 89.99,
     "is_active": true
   }'
+```
+
+## Order Endpoints
+
+### 1. Get All Orders
+**GET** `/api/orders`
+
+Retrieve all orders with filtering, pagination, and sorting (requires authentication).
+
+**Query Parameters:**
+- `page` (optional): Page number (default: 1)
+- `limit` (optional): Items per page (default: 10, max: 100)
+- `status` (optional): Filter by order status
+- `customer_id` (optional): Filter by customer ID
+- `product_id` (optional): Filter by product ID
+- `sortBy` (optional): Sort field (default: created_at)
+- `sortOrder` (optional): Sort direction - ASC or DESC (default: DESC)
+- `startDate` (optional): Filter orders from this date
+- `endDate` (optional): Filter orders until this date
+- `minAmount` (optional): Minimum order amount
+- `maxAmount` (optional): Maximum order amount
+
+**Response (200):**
+```json
+{
+  "success": true,
+  "message": "Orders retrieved successfully",
+  "data": {
+    "data": [
+      {
+        "id": "uuid-here",
+        "customer_id": "customer-uuid",
+        "product_id": "product-uuid",
+        "quantity": 2,
+        "total_amount": "199.98",
+        "status": "pending",
+        "notes": "Please deliver to office",
+        "created_at": "2024-01-01T00:00:00.000Z",
+        "updated_at": "2024-01-01T00:00:00.000Z",
+        "customer_first_name": "John",
+        "customer_last_name": "Doe",
+        "customer_email": "john.doe@example.com",
+        "product_name": "Advanced JavaScript Course",
+        "product_description": "Learn advanced JavaScript concepts",
+        "product_price": "99.99",
+        "product_category": "Programming"
+      }
+    ],
+    "pagination": {
+      "page": 1,
+      "limit": 10,
+      "total": 25,
+      "totalPages": 3,
+      "hasNext": true,
+      "hasPrev": false
+    }
+  }
+}
+```
+
+### 2. Get Order by ID
+**GET** `/api/orders/:id`
+
+Retrieve a specific order by ID (requires authentication).
+
+**Response (200):**
+```json
+{
+  "success": true,
+  "message": "Order retrieved successfully",
+  "data": {
+    "id": "uuid-here",
+    "customer_id": "customer-uuid",
+    "product_id": "product-uuid",
+    "quantity": 2,
+    "total_amount": "199.98",
+    "status": "pending",
+    "notes": "Please deliver to office",
+    "created_at": "2024-01-01T00:00:00.000Z",
+    "updated_at": "2024-01-01T00:00:00.000Z",
+    "customer_first_name": "John",
+    "customer_last_name": "Doe",
+    "customer_email": "john.doe@example.com",
+    "product_name": "Advanced JavaScript Course",
+    "product_description": "Learn advanced JavaScript concepts",
+    "product_price": "99.99",
+    "product_category": "Programming"
+  }
+}
+```
+
+### 3. Create Order
+**POST** `/api/orders`
+
+Create a new order (requires authentication).
+
+**Request Body:**
+```json
+{
+  "customer_id": "customer-uuid",
+  "product_id": "product-uuid",
+  "quantity": 2,
+  "total_amount": 199.98,
+  "status": "pending",
+  "notes": "Please deliver to office"
+}
+```
+
+**Validation Rules:**
+- `customer_id`: Required, must be valid UUID
+- `product_id`: Required, must be valid UUID
+- `quantity`: Required, must be greater than 0
+- `total_amount`: Required, must be greater than 0
+- `status`: Optional, defaults to "pending"
+- `notes`: Optional
+
+**Response (201):**
+```json
+{
+  "success": true,
+  "message": "Order created successfully",
+  "data": {
+    "id": "uuid-here",
+    "customer_id": "customer-uuid",
+    "product_id": "product-uuid",
+    "quantity": 2,
+    "total_amount": "199.98",
+    "status": "pending",
+    "notes": "Please deliver to office",
+    "created_by": "user-uuid",
+    "created_at": "2024-01-01T00:00:00.000Z",
+    "updated_at": "2024-01-01T00:00:00.000Z"
+  }
+}
+```
+
+### 4. Update Order
+**PUT** `/api/orders/:id`
+
+Update an existing order (requires authentication).
+
+**Request Body:**
+```json
+{
+  "quantity": 3,
+  "total_amount": 299.97,
+  "notes": "Updated delivery instructions"
+}
+```
+
+**Response (200):**
+```json
+{
+  "success": true,
+  "message": "Order updated successfully",
+  "data": {
+    "id": "uuid-here",
+    "customer_id": "customer-uuid",
+    "product_id": "product-uuid",
+    "quantity": 3,
+    "total_amount": "299.97",
+    "status": "pending",
+    "notes": "Updated delivery instructions",
+    "updated_by": "user-uuid",
+    "updated_at": "2024-01-01T00:00:00.000Z"
+  }
+}
+```
+
+### 5. Update Order Status
+**PATCH** `/api/orders/:id/status`
+
+Update the status of an order (requires authentication).
+
+**Request Body:**
+```json
+{
+  "status": "confirmed"
+}
+```
+
+**Valid Status Values:**
+- `pending`
+- `confirmed`
+- `processing`
+- `shipped`
+- `delivered`
+- `cancelled`
+
+**Response (200):**
+```json
+{
+  "success": true,
+  "message": "Order status updated successfully",
+  "data": {
+    "id": "uuid-here",
+    "status": "confirmed",
+    "updated_by": "user-uuid",
+    "updated_at": "2024-01-01T00:00:00.000Z"
+  }
+}
+```
+
+### 6. Delete Order
+**DELETE** `/api/orders/:id`
+
+Delete an order (admin only).
+
+**Response (200):**
+```json
+{
+  "success": true,
+  "message": "Order deleted successfully",
+  "data": null
+}
+```
+
+### 7. Get Orders by Customer
+**GET** `/api/orders/customer/:customerId`
+
+Retrieve all orders for a specific customer (requires authentication).
+
+**Query Parameters:**
+- `page` (optional): Page number (default: 1)
+- `limit` (optional): Items per page (default: 10)
+- `status` (optional): Filter by order status
+
+**Response (200):**
+```json
+{
+  "success": true,
+  "message": "Customer orders retrieved successfully",
+  "data": {
+    "data": [
+      {
+        "id": "uuid-here",
+        "customer_id": "customer-uuid",
+        "product_id": "product-uuid",
+        "quantity": 2,
+        "total_amount": "199.98",
+        "status": "pending",
+        "created_at": "2024-01-01T00:00:00.000Z",
+        "product_name": "Advanced JavaScript Course",
+        "product_category": "Programming"
+      }
+    ],
+    "pagination": {
+      "page": 1,
+      "limit": 10,
+      "total": 5,
+      "totalPages": 1,
+      "hasNext": false,
+      "hasPrev": false
+    }
+  }
+}
+```
+
+### 8. Get Orders by Product
+**GET** `/api/orders/product/:productId`
+
+Retrieve all orders for a specific product (requires authentication).
+
+**Query Parameters:**
+- `page` (optional): Page number (default: 1)
+- `limit` (optional): Items per page (default: 10)
+- `status` (optional): Filter by order status
+
+**Response (200):**
+```json
+{
+  "success": true,
+  "message": "Product orders retrieved successfully",
+  "data": {
+    "data": [
+      {
+        "id": "uuid-here",
+        "customer_id": "customer-uuid",
+        "product_id": "product-uuid",
+        "quantity": 2,
+        "total_amount": "199.98",
+        "status": "pending",
+        "created_at": "2024-01-01T00:00:00.000Z",
+        "customer_first_name": "John",
+        "customer_last_name": "Doe",
+        "customer_email": "john.doe@example.com"
+      }
+    ],
+    "pagination": {
+      "page": 1,
+      "limit": 10,
+      "total": 15,
+      "totalPages": 2,
+      "hasNext": true,
+      "hasPrev": false
+    }
+  }
+}
+```
+
+### 9. Get Order Statistics
+**GET** `/api/orders/statistics`
+
+Retrieve order statistics (requires authentication).
+
+**Query Parameters:**
+- `startDate` (optional): Start date for statistics
+- `endDate` (optional): End date for statistics
+- `status` (optional): Filter by order status
+
+**Response (200):**
+```json
+{
+  "success": true,
+  "message": "Order statistics retrieved successfully",
+  "data": {
+    "total_orders": 150,
+    "pending_orders": 25,
+    "confirmed_orders": 30,
+    "processing_orders": 20,
+    "shipped_orders": 35,
+    "delivered_orders": 35,
+    "cancelled_orders": 5,
+    "total_revenue": "14999.50",
+    "average_order_value": "99.99",
+    "first_order_date": "2024-01-01T00:00:00.000Z",
+    "last_order_date": "2024-12-01T00:00:00.000Z"
+  }
+}
+```
+
+### Example cURL commands for Orders:
+
+**Get all orders:**
+```bash
+curl -X GET "http://localhost:5000/api/orders?page=1&limit=10&status=pending" \
+  -H "Authorization: Bearer <your-jwt-token>"
+```
+
+**Create an order:**
+```bash
+curl -X POST http://localhost:5000/api/orders \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer <your-jwt-token>" \
+  -d '{
+    "customer_id": "customer-uuid",
+    "product_id": "product-uuid",
+    "quantity": 2,
+    "total_amount": 199.98,
+    "notes": "Please deliver to office"
+  }'
+```
+
+**Update order status:**
+```bash
+curl -X PATCH http://localhost:5000/api/orders/uuid-here/status \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer <your-jwt-token>" \
+  -d '{
+    "status": "confirmed"
+  }'
+```
+
+**Get order statistics:**
+```bash
+curl -X GET "http://localhost:5000/api/orders/statistics?startDate=2024-01-01&endDate=2024-12-31" \
+  -H "Authorization: Bearer <your-jwt-token>"
 ``` 
