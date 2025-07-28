@@ -153,6 +153,23 @@ function truncateString(str, length = 50, ending = '...') {
   return str.substring(0, length - ending.length) + ending;
 }
 
+/**
+ * Generates a URL-friendly slug from a string
+ * @param {string} str - The string to convert to slug
+ * @param {string} separator - Character to use as separator (default: '-')
+ * @returns {string} URL-friendly slug
+ */
+function generateSlug(str, separator = '-') {
+  if (!str || typeof str !== 'string') return '';
+  
+  return str
+    .toLowerCase()
+    .trim()
+    .replace(/[^\w\s-]/g, '') // Remove special characters except spaces and hyphens
+    .replace(/[\s_-]+/g, separator) // Replace spaces and underscores with separator
+    .replace(new RegExp(`^${separator}+|${separator}+$`, 'g'), ''); // Remove leading/trailing separators
+}
+
 module.exports = {
   formatDate,
   generateRandomString,
@@ -163,5 +180,6 @@ module.exports = {
   formatBytes,
   debounce,
   isValidEmail,
-  truncateString
+  truncateString,
+  generateSlug
 }; 
