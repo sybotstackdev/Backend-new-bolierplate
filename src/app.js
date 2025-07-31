@@ -14,6 +14,8 @@ import { apiLimiter } from "./middleware/rateLimiter.js";
 import userRoutes from "./routes/userRoutes.js";
 import productRoutes from "./routes/productRoutes.js";
 import orderRoutes from "./routes/orderRoutes.js";
+import fileRoutes from "./routes/fileRoutes.js";
+import analyticsRoutes from "./routes/analyticsRoutes.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -56,6 +58,8 @@ app.use("/api", apiLimiter);
 app.use("/api/users", userRoutes);
 app.use("/api/products", productRoutes);
 app.use("/api/orders", orderRoutes);
+app.use("/api/files", fileRoutes);
+app.use("/api/analytics", analyticsRoutes);
 
 app.get("/", async (req, res) => {
   res.send("Hello")

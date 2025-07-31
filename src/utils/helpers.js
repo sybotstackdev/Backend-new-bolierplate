@@ -170,6 +170,153 @@ function generateSlug(str, separator = '-') {
     .replace(new RegExp(`^${separator}+|${separator}+$`, 'g'), ''); // Remove leading/trailing separators
 }
 
+/**
+ * Generates a UUID v4 string
+ * @returns {string} UUID v4 string
+ */
+function generateUUID() {
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+    const r = Math.random() * 16 | 0;
+    const v = c === 'x' ? r : (r & 0x3 | 0x8);
+    return v.toString(16);
+  });
+}
+
+/**
+ * Deep clones an object or array
+ * @param {*} obj - The object to clone
+ * @returns {*} Deep cloned object
+ */
+function deepClone(obj) {
+  if (obj === null || typeof obj !== 'object') return obj;
+  if (obj instanceof Date) return new Date(obj.getTime());
+  if (obj instanceof Array) return obj.map(item => deepClone(item));
+  if (typeof obj === 'object') {
+    const clonedObj = {};
+    for (const key in obj) {
+      if (obj.hasOwnProperty(key)) {
+        clonedObj[key] = deepClone(obj[key]);
+      }
+    }
+    return clonedObj;
+  }
+  return obj;
+}
+
+/**
+ * Throttles a function call
+ * @param {Function} func - The function to throttle
+ * @param {number} limit - The number of milliseconds to throttle
+ * @returns {Function} Throttled function
+ */
+function throttle(func, limit) {
+  let inThrottle;
+  return function(...args) {
+    if (!inThrottle) {
+      func.apply(this, args);
+      inThrottle = true;
+      setTimeout(() => inThrottle = false, limit);
+    }
+  };
+}
+
+/**
+ * Formats a number with commas as thousands separators
+ * @param {number} num - The number to format
+ * @param {number} decimals - Number of decimal places
+ * @returns {string} Formatted number string
+ */
+function formatNumber(num, decimals = 0) {
+  if (typeof num !== 'number') return '0';
+  return num.toLocaleString('en-US', {
+    minimumFractionDigits: decimals,
+    maximumFractionDigits: decimals
+  });
+}
+
+/**
+ * Calculates the difference between two dates in various units
+ * @param {Date} date1 - First date
+ * @param {Date} date2 - Second date
+ * @param {string} unit - Unit of measurement ('days', 'hours', 'minutes', 'seconds')
+ * @returns {number} Difference in specified unit
+ */
+function dateDifference(date1, date2, unit = 'days') {
+  const diff = Math.abs(new Date(date1) - new Date(date2));
+  const units = {
+    days: 1000 * 60 * 60 * 24,
+    hours: 1000 * 60 * 60,
+    minutes: 1000 * 60,
+    seconds: 1000
+  };
+  return Math.floor(diff / units[unit]);
+}
+
+/**
+ * Validates a phone number format
+ * @param {string} phone - The phone number to validate
+ * @param {string} country - Country code (default: 'US')
+ * @returns {boolean} True if valid phone format, false otherwise
+ */
+function isValidPhone(phone, country = 'US') {
+  if (!phone || typeof phone !== 'string') return false;
+  
+  const phoneRegex = {
+    US: /^\+?1?\s*\(?([0-9]{3})\)?[-.\s]?([0-9]{3})[-.\s]?([0-9]{4})$/,
+    IN: /^\+?91?\s*([0-9]{5})[-.\s]?([0-9]{5})$/,
+    UK: /^\+?44?\s*([0-9]{4})[-.\s]?([0-9]{3})[-.\s]?([0-9]{3})$/
+  };
+  
+  const regex = phoneRegex[country] || phoneRegex.US;
+  return regex.test(phone.replace(/\s+/g, ''));
+}
+
+/**
+ * Generates a hash from a string using simple algorithm
+ * @param {string} str - The string to hash
+ * @returns {string} Hash string
+ */
+function simpleHash(str) {
+  if (!str || typeof str !== 'string') return '';
+  
+  let hash = 0;
+  for (let i = 0; i < str.length; i++) {
+    const char = str.charCodeAt(i);
+    hash = ((hash << 5) - hash) + char;
+    hash = hash & hash; // Convert to 32-bit integer
+  }
+  return Math.abs(hash).toString(16);
+}
+
+/**
+ * Checks if a string is a valid URL
+ * @param {string} url - The URL to validate
+ * @returns {boolean} True if valid URL, false otherwise
+ */
+function isValidURL(url) {
+  if (!url || typeof url !== 'string') return false;
+  
+  try {
+    new URL(url);
+    return true;
+  } catch (error) {
+    return false;
+  }
+}
+
+/**
+ * Converts a string to title case
+ * @param {string} str - The string to convert
+ * @returns {string} Title case string
+ */
+function toTitleCase(str) {
+  if (!str || typeof str !== 'string') return '';
+  
+  return str.replace(/\w\S*/g, (txt) => 
+    txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase()
+  );
+}
+
 module.exports = {
   formatDate,
   generateRandomString,
@@ -181,5 +328,14 @@ module.exports = {
   debounce,
   isValidEmail,
   truncateString,
-  generateSlug
+  generateSlug,
+  generateUUID,
+  deepClone,
+  throttle,
+  formatNumber,
+  dateDifference,
+  isValidPhone,
+  simpleHash,
+  isValidURL,
+  toTitleCase
 }; 
