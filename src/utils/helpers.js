@@ -317,6 +317,135 @@ function toTitleCase(str) {
   );
 }
 
+/**
+ * Generates a random color in hex format
+ * @param {boolean} includeHash - Whether to include # prefix (default: true)
+ * @returns {string} Random hex color
+ */
+function generateRandomColor(includeHash = true) {
+  const hex = Math.floor(Math.random() * 16777215).toString(16);
+  return includeHash ? `#${hex.padStart(6, '0')}` : hex.padStart(6, '0');
+}
+
+/**
+ * Validates and formats a credit card number
+ * @param {string} cardNumber - The credit card number to validate
+ * @param {boolean} formatOutput - Whether to format with spaces (default: false)
+ * @returns {object} Object with isValid, formatted, and cardType properties
+ */
+function validateCreditCard(cardNumber, formatOutput = false) {
+  if (!cardNumber || typeof cardNumber !== 'string') {
+    return { isValid: false, formatted: '', cardType: 'unknown' };
+  }
+  
+  // Remove all non-digit characters
+  const cleanNumber = cardNumber.replace(/\D/g, '');
+  
+  // Card type detection patterns
+  const cardPatterns = {
+    visa: /^4[0-9]{12}(?:[0-9]{3})?$/,
+    mastercard: /^5[1-5][0-9]{14}$/,
+    amex: /^3[47][0-9]{13}$/,
+    discover: /^6(?:011|5[0-9]{2})[0-9]{12}$/,
+    diners: /^3(?:0[0-5]|[68][0-9])[0-9]{11}$/,
+    jcb: /^(?:2131|1800|35\d{3})\d{11}$/
+  };
+  
+  // Luhn algorithm for validation
+  let sum = 0;
+  let isEven = false;
+  
+  for (let i = cleanNumber.length - 1; i >= 0; i--) {
+    let digit = parseInt(cleanNumber[i]);
+    
+    if (isEven) {
+      digit *= 2;
+      if (digit > 9) {
+        digit -= 9;
+      }
+    }
+    
+    sum += digit;
+    isEven = !isEven;
+  }
+  
+  const isValid = sum % 10 === 0;
+  
+  // Determine card type
+  let cardType = 'unknown';
+  for (const [type, pattern] of Object.entries(cardPatterns)) {
+    if (pattern.test(cleanNumber)) {
+      cardType = type;
+      break;
+    }
+  }
+  
+  // Format output if requested
+  let formatted = cleanNumber;
+  if (formatOutput && isValid) {
+    if (cardType === 'amex') {
+      formatted = cleanNumber.replace(/(\d{4})(\d{6})(\d{5})/, '$1 $2 $3');
+    } else {
+      formatted = cleanNumber.replace(/(\d{4})(?=\d)/g, '$1 ').trim();
+    }
+  }
+  
+  return {
+    isValid,
+    formatted,
+    cardType,
+    lastFour: cleanNumber.slice(-4)
+  };
+}
+
+/**
+ * Converts a number to words (e.g., 1234 -> "one thousand two hundred thirty-four")
+ * @param {number} num - The number to convert
+ * @returns {string} Number in words
+ */
+function numberToWords(num) {
+  if (typeof num !== 'number' || isNaN(num)) return 'zero';
+  
+  const ones = ['', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine'];
+  const teens = ['ten', 'eleven', 'twelve', 'thirteen', 'fourteen', 'fifteen', 'sixteen', 'seventeen', 'eighteen', 'nineteen'];
+  const tens = ['', '', 'twenty', 'thirty', 'forty', 'fifty', 'sixty', 'seventy', 'eighty', 'ninety'];
+  const scales = ['', 'thousand', 'million', 'billion', 'trillion'];
+  
+  if (num === 0) return 'zero';
+  
+  function convertLessThanOneThousand(num) {
+    if (num === 0) return '';
+    
+    if (num < 10) return ones[num];
+    if (num < 20) return teens[num - 10];
+    if (num < 100) {
+      return tens[Math.floor(num / 10)] + (num % 10 !== 0 ? '-' + ones[num % 10] : '');
+    }
+    if (num < 1000) {
+      return ones[Math.floor(num / 100)] + ' hundred' + (num % 100 !== 0 ? ' ' + convertLessThanOneThousand(num % 100) : '');
+    }
+  }
+  
+  function convert(num) {
+    if (num === 0) return '';
+    
+    const scaleIndex = Math.floor(Math.log10(num) / 3);
+    const scale = scales[scaleIndex];
+    const scaleValue = Math.pow(1000, scaleIndex);
+    const remainder = num % scaleValue;
+    const quotient = Math.floor(num / scaleValue);
+    
+    let result = convertLessThanOneThousand(quotient) + ' ' + scale;
+    if (remainder !== 0) {
+      result += ' ' + convert(remainder);
+    }
+    
+    return result.trim();
+  }
+  
+  return convert(Math.abs(num));
+}
+
 module.exports = {
   formatDate,
   generateRandomString,
@@ -337,5 +466,8 @@ module.exports = {
   isValidPhone,
   simpleHash,
   isValidURL,
-  toTitleCase
+  toTitleCase,
+  generateRandomColor,
+  validateCreditCard,
+  numberToWords
 }; 
